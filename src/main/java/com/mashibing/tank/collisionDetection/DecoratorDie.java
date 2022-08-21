@@ -3,7 +3,6 @@ package com.mashibing.tank.collisionDetection;
 import com.mashibing.tank.Decorator.Decorator;
 import com.mashibing.tank.GameModel;
 import com.mashibing.tank.GameObject;
-import com.mashibing.tank.Tank;
 
 /**
  * @Auther: szbb-544826634

@@ -1,7 +1,7 @@
 package com.mashibing.tank.Decorator;
 
-import com.mashibing.coordinate.Coordinate;
 import com.mashibing.tank.GameObject;
+import com.mashibing.tank.coordinate.Coordinate;
 
 import java.awt.*;
 

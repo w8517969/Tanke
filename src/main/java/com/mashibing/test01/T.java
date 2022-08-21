@@ -2,10 +2,7 @@ package com.mashibing.test01;
 
 
 import com.mashibing.tank.*;
-import com.mashibing.tank.resourceMgr.Audio;
 
-import java.util.List;
-import java.util.Random;
 
 /**
  * @Auther: szbb-544826634

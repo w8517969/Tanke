@@ -1,12 +1,10 @@
 package com.mashibing.tank.Bullet;
 
-import com.mashibing.coordinate.Coordinate;
 import com.mashibing.tank.Camp;
 import com.mashibing.tank.Dir;
 import com.mashibing.tank.Tank;
 import com.mashibing.tank.TankFrame;
-import com.mashibing.tank.collisionDetection.CollisionDetection;
-import com.mashibing.tank.resourceMgr.ResourceMgr;
+import com.mashibing.tank.coordinate.Coordinate;
 
 import java.awt.*;
 

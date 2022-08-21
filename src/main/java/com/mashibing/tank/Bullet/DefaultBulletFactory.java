@@ -1,9 +1,9 @@
 package com.mashibing.tank.Bullet;
 
-import com.mashibing.coordinate.Coordinate;
 import com.mashibing.tank.Dir;
 import com.mashibing.tank.Tank;
 import com.mashibing.tank.TankFrame;
+import com.mashibing.tank.coordinate.Coordinate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +90,7 @@ public class DefaultBulletFactory extends BulletFactory {
         //总的需求数量
         for (int i = 0; i < demand.size; i++) {
             //需求[i]中的子弹需求数量
-            for (int j = 0; j < demand.quantitys[i]; j++) {
+            for (int j = 0; j < demand.quantity[i]; j++) {
                 DefaultBullet bullet=new DefaultBullet(demand.coordinates[i][j],tank.camp,demand.dirs[i]);
                 //速度
                 bullet.setSpeed(demand.speeds[i]);

@@ -35,7 +35,7 @@ public class ResourceMgr {
             //爆炸
             for (int i = 0; i < 16; i++) {
                 explodes[i]=ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream(
-                            "images/e"+(i+1)+".gif"));
+                            "images/e" +(i+1)+".gif"));
             }
         } catch (IOException e) {
             e.printStackTrace();

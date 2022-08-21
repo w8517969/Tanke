@@ -1,6 +1,7 @@
 package com.mashibing.tank;
 
-import com.mashibing.coordinate.Coordinate;
+
+import com.mashibing.tank.coordinate.Coordinate;
 
 import java.awt.*;
 
@@ -20,7 +21,7 @@ public class Wall extends GameObject {
     public Rectangle getRectangle() {
         return this.rectangle;
     }
-    public Wall(Coordinate coordinate,int width,int height) {
+    public Wall(Coordinate coordinate, int width, int height) {
         super(coordinate);
         this.width=width;
         this.height=height;

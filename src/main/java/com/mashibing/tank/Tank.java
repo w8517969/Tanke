@@ -1,9 +1,10 @@
 package com.mashibing.tank;
 
-import com.mashibing.coordinate.Coordinate;
+
 import com.mashibing.tank.Bullet.*;
 import com.mashibing.tank.Decorator.BoxDecorator;
 import com.mashibing.tank.Explode.Explode;
+import com.mashibing.tank.coordinate.Coordinate;
 import com.mashibing.tank.resourceMgr.Audio;
 import com.mashibing.tank.resourceMgr.ResourceMgr;
 

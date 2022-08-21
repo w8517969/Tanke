@@ -5,8 +5,6 @@ import com.mashibing.tank.GameModel;
 import com.mashibing.tank.GameObject;
 import com.mashibing.tank.Wall;
 
-import java.util.List;
-
 /**
  * @Auther: szbb-544826634
  * @Date: 2022/8/15 - 08 - 15 - 12:54

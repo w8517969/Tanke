@@ -1,10 +1,8 @@
 package com.mashibing.tank.collisionDetection;
 
 import com.mashibing.tank.GameObject;
-import com.mashibing.test01.T;
 
 import java.awt.*;
-import java.util.List;
 
 /**
  * @Auther: szbb-544826634
