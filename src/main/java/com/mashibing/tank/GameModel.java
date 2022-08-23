@@ -89,9 +89,6 @@ public class GameModel {
     }
     //在窗口中绘图的方法
     public void paint(Graphics graphics){
-        //进行碰撞检测
-//        if (random.nextInt(100)>98)myTank.die();
-        collision.doTask();
         //计数并画出所有游戏单位
         int t,b,e;
         t=b=e=0;
@@ -121,6 +118,8 @@ public class GameModel {
         //显示爆炸数
         graphics.drawString("爆炸数量:"+explodeCount, 10, 80);
         graphics.setColor(color);
+        //进行碰撞检测
+        collision.doTask();
     }
     //删除游戏元素
     public void remove(GameObject o){

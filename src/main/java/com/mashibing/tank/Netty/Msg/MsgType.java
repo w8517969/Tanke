@@ -25,7 +25,7 @@ public enum  MsgType{
 
     @Override
     public String toString() {
-        return "消息枚举："+this.getName()+"Msg";
+        return "消息："+this.getName()+"Msg";
     }
 
 }

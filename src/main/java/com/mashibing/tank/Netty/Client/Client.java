@@ -105,7 +105,7 @@ public  class Client {
     private class clientHandler extends ChannelInboundHandlerAdapter {
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-            System.out.println("客户端接收到新消息: "+msg);
+            System.out.println("客户端接收到新消息:    "+msg);
             ((Msg) msg).doIt();
             switch (((Msg) msg).msgType){
                 case UUID:
@@ -125,7 +125,7 @@ public  class Client {
                     Client.frame.getGM().initialization();
                     //发送新人上线消息
                     Msg joinMsg=new JoinMsg();
-                    System.out.println("向服务器发送新人上线消息"+joinMsg);
+                    System.out.println("向服务器发送新人上线消息    "+joinMsg);
                     ctx.writeAndFlush(joinMsg);
                     break;
                 case Exit:
@@ -143,7 +143,7 @@ public  class Client {
                 case Join:
                     //如果有新人进来上报自己的坦克信息
                     Msg tankMsg=new TankMsg(frame.getGM().myTank);
-                    System.out.println("向服务器发送自己的坦克信息"+tankMsg);
+                    System.out.println("向服务器发送自己的坦克信息    "+tankMsg);
                     ctx.writeAndFlush(tankMsg);
                     break;
                 case Fire:

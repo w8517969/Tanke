@@ -16,8 +16,10 @@ public class TankBulletCollisionDetection implements CollisionDetection {
     @Override
     public boolean doTask() {
         for (int i = 0; i < GameModel.gameObjectList.size()-1; i++) {
-            for (int j = i+1; j < GameModel.gameObjectList.size()&&collision(GameModel.gameObjectList.get(i), GameModel.gameObjectList.get(j)); j++) {
-                ;
+            if (GameModel.gameObjectList.get(i).isDie()) break;
+            for (int j = i+1; j < GameModel.gameObjectList.size(); j++) {
+                if (GameModel.gameObjectList.get(i).isDie()) break;
+                if (!(collision(GameModel.gameObjectList.get(i), GameModel.gameObjectList.get(j))))break;
             }
         }
         return true;

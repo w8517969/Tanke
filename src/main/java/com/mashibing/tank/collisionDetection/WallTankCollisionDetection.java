@@ -32,14 +32,14 @@ public class WallTankCollisionDetection implements CollisionDetection {
             Tank tank=(Tank) o2;
             //如果相撞了
             if (CollisionDetection.test(wall.getRectangle(), tank.getRectangle())) {
-                tank.changeCoordinateBack();
+                tank.Back();
             }
         }else if (o2 instanceof Wall && o1 instanceof Tank && !o1.isDie()) {
             Wall wall = (Wall) o2;
             Tank tank=(Tank) o1;
             //如果相撞了
             if (CollisionDetection.test(wall.getRectangle(), tank.getRectangle())) {
-                tank.changeCoordinateBack();
+                tank.Back();
             }
         }
         return true;

@@ -1,6 +1,5 @@
 package com.mashibing.tank.collisionDetection;
 
-import com.mashibing.tank.Dir;
 import com.mashibing.tank.GameModel;
 import com.mashibing.tank.GameObject;
 import com.mashibing.tank.Tank;
@@ -32,15 +31,18 @@ public class TankTankCollisionDetection implements CollisionDetection {
             Tank tank2 = (Tank) o2;
             //如果相撞了
             if (CollisionDetection.test(tank1.getRectangle(), tank2.getRectangle())) {
-                //判断相对方向
-                Dir itDir = tank1.coordinate.dirOfMe(tank2.getCoordinate());
-                if (tank1.dir == itDir && tank1.isMoving()) {
-                    tank1.changeCoordinateBack();
-                }
-                itDir = tank2.coordinate.dirOfMe(tank1.getCoordinate());
-                if (tank2.dir == itDir && tank2.isMoving()) {
-                    tank2.changeCoordinateBack();
-                }
+//                //判断相对方向
+//                Dir itDir = tank1.coordinate.dirOfMe(tank2.getCoordinate());
+//                if (tank1.dir == itDir && tank1.isMoving()) {
+//                    tank1.Back();
+//                }
+//                itDir = tank2.coordinate.dirOfMe(tank1.getCoordinate());
+//                if (tank2.dir == itDir && tank2.isMoving()) {
+//                    tank2.Back();
+//                }
+
+                tank1.Back();
+                tank2.Back();
             }
         }
         return true;

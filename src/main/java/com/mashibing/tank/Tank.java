@@ -25,6 +25,7 @@ import java.util.UUID;
  * @version: 1.0
  */
 public class Tank extends GameObject {
+    private Coordinate oldCoordinate;
     public UUID uuid;
     //阵营
     public Camp camp;
@@ -59,18 +60,22 @@ public class Tank extends GameObject {
             switch (key){
                 case KeyEvent.VK_UP:
                     setBU(true);
+                    setDir();
                     setMoving();
                     break;
                 case KeyEvent.VK_DOWN:
                     setBD(true);
+                    setDir();
                     setMoving();
                     break;
                 case KeyEvent.VK_LEFT:
                     setBL(true);
+                    setDir();
                     setMoving();
                     break;
                 case KeyEvent.VK_RIGHT:
                     setBR(true);
+                    setDir();
                     setMoving();
                     break;
             }
@@ -83,18 +88,22 @@ public class Tank extends GameObject {
             switch (key){
                 case KeyEvent.VK_UP:
                     setBU(false);
+                    setDir();
                     setMoving();
                     break;
                 case KeyEvent.VK_DOWN:
                     setBD(false);
+                    setDir();
                     setMoving();
                     break;
                 case KeyEvent.VK_LEFT:
                     setBL(false);
+                    setDir();
                     setMoving();
                     break;
                 case KeyEvent.VK_RIGHT:
                     setBR(false);
+                    setDir();
                     setMoving();
                     break;
                 case KeyEvent.VK_SPACE:
@@ -131,73 +140,12 @@ public class Tank extends GameObject {
     private void fireAll(){
         GameModel.gameObjectList.addAll(bulletFactory.getBulletsAll(this));
     }
-    //根据方向调整坐标值
-    private void changeCoordinate(){
-        switch (dir){
-            case UP:
-               coordinate.y-=speed;
-               if (coordinate.y<0){
-                   coordinate.y=0;
-               }
-               break;
-            case DOWN:
-                coordinate.y+=speed;
-                if (coordinate.y>TankFrame.GAME_HEIGHT-this.HEIGHT){
-                    coordinate.y=TankFrame.GAME_HEIGHT-this.HEIGHT;
-                }
-                break;
-            case LEFT:
-                coordinate.x-=speed;
-                if (coordinate.x<0){
-                    coordinate.x=0;
-                }
-                break;
-            case RIGHT:
-                coordinate.x+=speed;
-                if (coordinate.x>TankFrame.GAME_WIDTH-this.WIDTH){
-                    coordinate.x=TankFrame.GAME_WIDTH-this.WIDTH;
-                }
-                break;
-        }
-    }
-    //反向移动
-    public void changeCoordinateBack() {
-        switch (dir){
-            case UP:
-                coordinate.y=coordinate.y+speed+4;
-                if (coordinate.y>TankFrame.GAME_HEIGHT-speed){
-                    coordinate.y=TankFrame.GAME_HEIGHT-speed;
-                }
-                break;
-            case DOWN:
-                coordinate.y=coordinate.y-speed-4;
-                if (coordinate.y<0){
-                    coordinate.y=0;
-                }
-                break;
-            case LEFT:
-                coordinate.x=coordinate.x+speed+4;
-                if (coordinate.x>TankFrame.GAME_WIDTH-speed){
-                    coordinate.x=TankFrame.GAME_WIDTH-speed;
-                }
-                break;
-            case RIGHT:
-                coordinate.x=coordinate.x-speed-4;
-                if (coordinate.x<0){
-                    coordinate.x=0;
-                }
-                break;
-        }
-    }
 
     //更新坦克，其中包括更改坐标，方向，在窗口中显示
     public void paint(Graphics graphics){
         //如果坦克存活
         if (!isDie()) {
-            if (moving) {
-                changeCoordinate();//修改坐标
-                changeDir();//修改方向
-            }
+            changeCoordinate();//修改坐标
             //画出UUID
             Color color = graphics.getColor();
             graphics.setColor(Color.orange);
@@ -244,6 +192,7 @@ public class Tank extends GameObject {
     //构造
     public Tank(Coordinate coordinate, UUID uuid, Camp camp, int life, boolean moving, Dir dir) {
         super(coordinate);
+        this.oldCoordinate=new Coordinate(coordinate);
         this.uuid = uuid;
         this.camp = camp;
         this.life = life;
@@ -252,6 +201,7 @@ public class Tank extends GameObject {
     }
     public Tank(int x, int y, UUID uuid, Camp camp, int life, boolean moving, Dir dir) {
         super(x, y);
+        this.oldCoordinate=new Coordinate(x,y);
         this.uuid = uuid;
         this.camp = camp;
         this.life = life;
@@ -264,15 +214,85 @@ public class Tank extends GameObject {
                 "coordinate=" + coordinate +
                 '}';
     }
+    //根据方向调整坐标值
+    private void changeCoordinate(){
+        if (isMoving()) {
+            oldCoordinate.x=coordinate.x;
+            oldCoordinate.y=coordinate.y;
+            switch (dir) {
+                case UP:
+                    coordinate.y -= speed;
+                    if (coordinate.y < 0) {
+                        coordinate.y = 0;
+                    }
+                    break;
+                case DOWN:
+                    coordinate.y += speed;
+                    if (coordinate.y > TankFrame.GAME_HEIGHT - this.HEIGHT) {
+                        coordinate.y = TankFrame.GAME_HEIGHT - this.HEIGHT;
+                    }
+                    break;
+                case LEFT:
+                    coordinate.x -= speed;
+                    if (coordinate.x < 0) {
+                        coordinate.x = 0;
+                    }
+                    break;
+                case RIGHT:
+                    coordinate.x += speed;
+                    if (coordinate.x > TankFrame.GAME_WIDTH - this.WIDTH) {
+                        coordinate.x = TankFrame.GAME_WIDTH - this.WIDTH;
+                    }
+                    break;
+            }
+        }
+    }
+    //反向移动
+    public void Back() {
+        coordinate.x=oldCoordinate.x;
+        coordinate.y=oldCoordinate.y;
+    }
+    public void changeCoordinateBack() {
+        switch (dir){
+            case UP:
+                coordinate.y=coordinate.y+speed+4;
+                if (coordinate.y>TankFrame.GAME_HEIGHT-speed){
+                    coordinate.y=TankFrame.GAME_HEIGHT-speed;
+                }
+                break;
+            case DOWN:
+                coordinate.y=coordinate.y-speed-4;
+                if (coordinate.y<0){
+                    coordinate.y=0;
+                }
+                break;
+            case LEFT:
+                coordinate.x=coordinate.x+speed+4;
+                if (coordinate.x>TankFrame.GAME_WIDTH-speed){
+                    coordinate.x=TankFrame.GAME_WIDTH-speed;
+                }
+                break;
+            case RIGHT:
+                coordinate.x=coordinate.x-speed-4;
+                if (coordinate.x<0){
+                    coordinate.x=0;
+                }
+                break;
+        }
+    }
     //坐标
     public Coordinate getCoordinate() {
         return coordinate;
     }
     public void setCoordinate(int x,int y){
+        oldCoordinate.x=coordinate.x;
+        oldCoordinate.y=coordinate.y;
         this.coordinate.x=x;
         this.coordinate.y=y;
     }
     public void setCoordinate(Coordinate coordinate) {
+        oldCoordinate.x=coordinate.x;
+        oldCoordinate.y=coordinate.y;
         this.coordinate.x = coordinate.x;
         this.coordinate.y = coordinate.y;
     }
@@ -298,26 +318,20 @@ public class Tank extends GameObject {
         this.camp = camp;
     }
     //方向
-    //根据按键状态调整坦克方向的方法
-    private void changeDir(){
-        if (BU||BD||BL||BR) {
-            Dir nowDir=Dir.DOWN;
-            if (BU) {
-                nowDir = Dir.UP;
-            }
-            if (BD) {
-                nowDir = Dir.DOWN;
-            }
-            if (BL) {
-                nowDir = Dir.LEFT;
-            }
-            if (BR) {
-                nowDir = Dir.RIGHT;
-            }
-            if (dir!=nowDir){
-                setDir(nowDir);
-                Client.channel.writeAndFlush(new TankDirMsg(this));
-            }
+    public void setDir(){
+        Dir nowDir=dir;
+        if (BU&&!BD&&!BL&&!BR){
+            nowDir= Dir.UP;
+        }if (!BU&&BD&&!BL&&!BR){
+            nowDir= Dir.DOWN;
+        }if (!BU&&!BD&&BL&&!BR){
+            nowDir= Dir.LEFT;
+        }if (!BU&&!BD&&!BL&&BR){
+            nowDir= Dir.RIGHT;
+        }
+        if (dir!=nowDir){
+            setDir(nowDir);
+            Client.channel.writeAndFlush(new TankDirMsg(this));
         }
     }
     public Dir getDir() {

@@ -65,7 +65,7 @@ public class Server {
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
             Msg msg1=(Msg) msg;
-            System.out.println("服务器收到消息："+msg1);
+            System.out.println("服务器收到消息：    "+msg1);
             switch (msg1.msgType){
                 case UUID:
                     break;
@@ -75,11 +75,11 @@ public class Server {
                 case TankDir:
                 case TankMove:
                 case TankDie:
-                    System.out.println("广播消息"+msg1);
+                    System.out.println("广播消息    "+msg1);
                     radioAll(msg1);
                     break;
                 case Exit:
-                    System.out.println("广播消息"+msg1);
+                    System.out.println("广播消息    "+msg1);
                     removeChannelHandlerContext(ctx);
                     radioAll(msg1);
                     break;
@@ -93,7 +93,7 @@ public class Server {
 
             UUID uuid=UUID.randomUUID();
             UUIDMsg msg=new UUIDMsg(uuid);
-            System.out.println("连接成功，向客户端发送UUID"+msg);
+            System.out.println("连接成功，向客户端发送    "+msg);
             ctx.writeAndFlush(msg);
             addChannelHandlerContext(uuid, ctx);
         }

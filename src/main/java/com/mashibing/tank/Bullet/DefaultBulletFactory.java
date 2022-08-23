@@ -56,7 +56,7 @@ public class DefaultBulletFactory extends BulletFactory {
         //方向
         Dir[] dirs={Dir.UP,Dir.UP,Dir.LEFT,Dir.LEFT};
         //各个方向的子弹数量
-        int[] quantitys={10,10,6,6};
+        int[] quantitys={15,15,10,10};
         //子弹飞行速度
         int[] speeds={20,30,20,30};
         //子弹坐标

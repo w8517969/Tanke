@@ -27,7 +27,8 @@ public class MsgDecode extends ByteToMessageDecoder {
         MsgType msgType=MsgType.values()[byteBuf.readInt()];
         Msg msg=null;
         byte[] bytes=new byte[length];
-        System.out.println("开始"+msgType+"消息的拆包");
+        System.out.println();
+        System.out.println("开始    "+msgType+"  的拆包");
         switch (msgType){
             case Tank:      msg=new TankMsg();      byteBuf.readBytes(bytes);       break;
             case Exit:      msg=new ExitMsg();      byteBuf.readBytes(bytes);       break;
@@ -39,7 +40,7 @@ public class MsgDecode extends ByteToMessageDecoder {
             case TankDir:   msg=new TankDirMsg();   byteBuf.readBytes(bytes);       break;
         }
         msg.byteCome(bytes);
-        System.out.println("拆包完成"+msg);
+        System.out.println("拆包完成    "+msg);
         list.add(msg);
 
     }

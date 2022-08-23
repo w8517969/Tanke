@@ -47,6 +47,7 @@ public class TankFrame extends Frame {
     }
     //构造方法
     private TankFrame()  {
+        setLocation(200, 100);
         setSize(GAME_WIDTH, GAME_HEIGHT);//设置窗口大小
         setResizable(false);//设置窗口不可以改变大小
         setTitle("坦克大战");//设置窗口标题
