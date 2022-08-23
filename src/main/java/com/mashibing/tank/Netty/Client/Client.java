@@ -15,16 +15,19 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import java.util.UUID;
 
 public  class Client {
-    private static final Client CLIENT=new Client();
-    public static TankFrame frame;//游戏窗口
+    private static  Client client=null;
+    public static TankFrame frame=null;//游戏窗口
     public  static Channel channel=null;//通道
     public static UUID uuid=null;//唯一标示
 
     private Client() {
-
+        frame = TankFrame.getTankFrame();
     }
     public static Client getClient(){
-        return CLIENT;
+        if (client==null){
+            client=new Client();
+        }
+        return client;
     }
 
     public void startUp() {
@@ -63,8 +66,7 @@ public  class Client {
             System.out.println("结果出来了");
             //调用f.sync()方法一直等到未来的结果产生
             f.sync();
-            //初始化
-            frame = TankFrame.getTankFrame();
+            //新建线程刷新窗口
             new Thread(() -> {
                 while (true) {
                     try {
@@ -111,7 +113,7 @@ public  class Client {
                     while (true){
                         if (Client.getClient()==null|| TankFrame.getTankFrame() ==null|| TankFrame.GM==null) {
                             try {
-                                Thread.sleep(100);
+                                Thread.sleep(1000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }

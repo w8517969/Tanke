@@ -17,16 +17,11 @@ import java.awt.event.WindowEvent;
  * @version: 1.0
  */
 public class TankFrame extends Frame {
-    private static final TankFrame TANK_FRAME=new TankFrame();
-    public static final int GAME_WIDTH=Integer.parseInt(PropertyMgr.get("GAME_WIDTH")),
-            GAME_HEIGHT=Integer.parseInt(PropertyMgr.get("GAME_HEIGHT"));
+    private static  TankFrame TANK_FRAME=null;
+    public static  int GAME_WIDTH=Integer.parseInt(PropertyMgr.get("GAME_WIDTH"));
+    public static  int GAME_HEIGHT=Integer.parseInt(PropertyMgr.get("GAME_HEIGHT"));
     public static GameModel GM=GameModel.getGameModel();
-    static {
-        TANK_FRAME.setSize(GAME_WIDTH, GAME_HEIGHT);//设置窗口大小
-        TANK_FRAME.setResizable(false);//设置窗口不可以改变大小
-        TANK_FRAME.setTitle("坦克大战");//设置窗口标题
-        TANK_FRAME.setVisible(true);//设置窗口为显示状态
-    }
+
     //避免显示闪烁，使用缓存空间避免闪烁
     Image offScreenImage=null;//图片
     @Override
@@ -52,6 +47,10 @@ public class TankFrame extends Frame {
     }
     //构造方法
     private TankFrame()  {
+        setSize(GAME_WIDTH, GAME_HEIGHT);//设置窗口大小
+        setResizable(false);//设置窗口不可以改变大小
+        setTitle("坦克大战");//设置窗口标题
+        setVisible(true);//设置窗口为显示状态
         addKeyListener(new MyKeyListener());//给窗口增加一个键盘监听事件0
         //添加Window监听器，点击右上角的小叉可以关闭窗口
         addWindowListener(new WindowAdapter() {
@@ -68,6 +67,9 @@ public class TankFrame extends Frame {
         });
     }
     public static TankFrame getTankFrame(){
+        if (TANK_FRAME==null){
+            TANK_FRAME=new TankFrame();
+        }
         return TANK_FRAME;
     }
     @Override

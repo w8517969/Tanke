@@ -20,25 +20,30 @@ import java.util.*;
  * @version: 1.0
  */
 public class GameModel {
-    private static final GameModel GAME_MODEL=new GameModel();
+    private static  GameModel GAME_MODEL=new GameModel();
     public static List<GameObject> gameObjectList=new LinkedList<>();
     public static HashMap<UUID,Tank> tankHashMap=new HashMap<>();
-    CollisionDetectionChain collision=new CollisionDetectionChain();
+    private CollisionDetectionChain collision=new CollisionDetectionChain();
+    //播放背景音乐
+    private Thread thread= new Thread(()-> {new Audio("audio/war1.wav").loop();} , "播放背景音乐");
     //我方坦克
     public Tank myTank;
     //坦克总数
-    public int tankCount;
+    public int tankCount=0;
     //子弹总数
-    public int bulletCount;
+    public int bulletCount=0;
     //爆炸总数
-    public int explodeCount;
-    Random random=new Random();
+    public int explodeCount=0;
+    Random random=random=new Random();;
+
     //构造方法
     private GameModel() {
-        //播放背景音乐
-        new Thread(()-> {new Audio("audio/war1.wav").loop();} , "播放背景音乐").start();
+        thread.start();
     }
     public static GameModel getGameModel(){
+        if (GAME_MODEL==null){
+            GAME_MODEL=new GameModel();
+        }
         return GAME_MODEL;
     }
     public void initialization(){
@@ -85,7 +90,7 @@ public class GameModel {
     //在窗口中绘图的方法
     public void paint(Graphics graphics){
         //进行碰撞检测
-        if (random.nextInt(100)>98)myTank.die();
+//        if (random.nextInt(100)>98)myTank.die();
         collision.doTask();
         //计数并画出所有游戏单位
         int t,b,e;

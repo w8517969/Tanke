@@ -1,8 +1,6 @@
 package com.mashibing.tank.collisionDetection;
 
 
-import com.mashibing.tank.GameModel;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,23 +15,23 @@ public class CollisionDetectionChain implements Task {
     //发生碰撞
     @Override
     public boolean doTask() {
-        for (int i = 0; i < GameModel.gameObjectList.size()-1; i++) {
-            for (int g = i+1; g <GameModel.gameObjectList.size() ; g++) {
-                for (int j = 0; j < tasks.size(); j++) {
-                    if (tasks.get(j) instanceof CollisionDetection) {
-                        if (!(((CollisionDetection) tasks.get(j)).collision(GameModel.gameObjectList.get(i),
-                                GameModel.gameObjectList.get(g)))) {
-                            break;
-                        }
-                    } else {
-                        tasks.get(j).doTask();
-                    }
-                }
-            }
-        }
-//        for (int j = 0; j < tasks.size(); j++) {
-//             tasks.get(j).doTask();
+//        for (int i = 0; i < GameModel.gameObjectList.size()-1; i++) {
+//            for (int g = i+1; g <GameModel.gameObjectList.size() ; g++) {
+//                for (int j = 0; j < tasks.size(); j++) {
+//                    if (tasks.get(j) instanceof CollisionDetection) {
+//                        if (!(((CollisionDetection) tasks.get(j)).collision(GameModel.gameObjectList.get(i),
+//                                GameModel.gameObjectList.get(g)))) {
+//                            break;
+//                        }
+//                    } else {
+//                        tasks.get(j).doTask();
+//                    }
+//                }
+//            }
 //        }
+        for (int j = 0; j < tasks.size(); j++) {
+             tasks.get(j).doTask();
+        }
         return true;
     }
 
