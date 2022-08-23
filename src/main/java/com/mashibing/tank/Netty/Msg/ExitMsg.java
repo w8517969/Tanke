@@ -22,7 +22,7 @@ public class ExitMsg extends Msg{
 
     @Override
     protected void toBytesWork(DataOutputStream dos) throws IOException {
-        dos.writeInt(this.LENGTH);//包长度
+        dos.writeInt(ExitMsg.LENGTH);//包长度
         dos.writeInt(msgType.ordinal());//包类型
         dos.writeLong(uuid.getMostSignificantBits());
         dos.writeLong(uuid.getLeastSignificantBits());

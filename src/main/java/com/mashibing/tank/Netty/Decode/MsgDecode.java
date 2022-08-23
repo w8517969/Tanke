@@ -29,22 +29,14 @@ public class MsgDecode extends ByteToMessageDecoder {
         byte[] bytes=new byte[length];
         System.out.println("开始"+msgType+"消息的拆包");
         switch (msgType){
-            case Tank:
-                msg=new TankMsg();
-                byteBuf.readBytes(bytes);
-                break;
-            case Exit:
-                msg=new ExitMsg();
-                byteBuf.readBytes(bytes);
-                break;
-            case UUID:
-                msg=new UUIDMsg();
-                byteBuf.readBytes(bytes);
-                break;
-            case Join:
-                msg=new JoinMsg();
-                byteBuf.readBytes(bytes);
-                break;
+            case Tank:      msg=new TankMsg();      byteBuf.readBytes(bytes);       break;
+            case Exit:      msg=new ExitMsg();      byteBuf.readBytes(bytes);       break;
+            case UUID:      msg=new UUIDMsg();      byteBuf.readBytes(bytes);       break;
+            case Join:      msg=new JoinMsg();      byteBuf.readBytes(bytes);       break;
+            case Fire:      msg=new FireMsg();      byteBuf.readBytes(bytes);       break;
+            case TankDie:   msg=new TankDieMsg();   byteBuf.readBytes(bytes);       break;
+            case TankMove:  msg=new TankMoveMsg();  byteBuf.readBytes(bytes);       break;
+            case TankDir:   msg=new TankDirMsg();   byteBuf.readBytes(bytes);       break;
         }
         msg.byteCome(bytes);
         System.out.println("拆包完成"+msg);

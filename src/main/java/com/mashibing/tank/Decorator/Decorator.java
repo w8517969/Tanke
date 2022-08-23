@@ -19,6 +19,12 @@ public abstract class Decorator extends GameObject {
         super(x, y);
         this.gameObject = gameObject;
     }
+    public  GameObject getRootObject(){
+        return (gameObject instanceof Decorator)
+                ?  ( (Decorator) gameObject )  .getRootObject()
+                : gameObject;
+    }
+
     public GameObject getGameObject() {
         return gameObject;
     }

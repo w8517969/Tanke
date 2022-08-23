@@ -17,7 +17,7 @@ public class JoinMsg extends Msg {
     }
     @Override
     protected void toBytesWork(DataOutputStream dos) throws IOException {
-        dos.writeInt(this.LENGTH);//包长度
+        dos.writeInt(JoinMsg.LENGTH);//包长度
         dos.writeInt(msgType.ordinal());//包类型
     }
     @Override

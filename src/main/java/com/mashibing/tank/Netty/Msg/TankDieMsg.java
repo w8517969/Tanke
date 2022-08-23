@@ -7,11 +7,11 @@ import java.util.UUID;
 
 /**
  * @Auther: szbb-544826634
- * @Date: 2022/8/22 - 08 - 22 - 15:16
+ * @Date: 2022/8/22 - 08 - 22 - 3:23
  * @Description: com.mashibing.tank.Netty.Msg
  * @version: 1.0
  */
-public class UUIDMsg extends Msg{
+public class TankDieMsg extends Msg{
     public static final int LENGTH =16;//消息长度
     public UUID uuid;
     @Override
@@ -20,7 +20,7 @@ public class UUIDMsg extends Msg{
 
     @Override
     protected void toBytesWork(DataOutputStream dos) throws IOException {
-        dos.writeInt(UUIDMsg.LENGTH);//包长度
+        dos.writeInt(TankDieMsg.LENGTH);//包长度
         dos.writeInt(msgType.ordinal());//包类型
         dos.writeLong(uuid.getMostSignificantBits());
         dos.writeLong(uuid.getLeastSignificantBits());
@@ -32,17 +32,18 @@ public class UUIDMsg extends Msg{
         this.uuid=new UUID(dis.readLong(), dis.readLong());
     }
 
-    public UUIDMsg(UUID uuid) {
-        this.msgType=MsgType.UUID;
-        this.uuid = uuid;
+    public TankDieMsg() {
+        this.msgType=MsgType.TankDie;
     }
-    public UUIDMsg() {
-        this.msgType=MsgType.UUID;
+
+    public TankDieMsg(UUID uuid) {
+        this.msgType=MsgType.TankDie;
+        this.uuid = uuid;
     }
 
     @Override
     public String toString() {
-        return "UUIDMsg{" +
+        return "TankDieMsg{" +
                 "uuid=" + uuid +
                 ", msgType=" + msgType +
                 '}';

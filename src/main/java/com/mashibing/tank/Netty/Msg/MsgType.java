@@ -7,22 +7,18 @@ package com.mashibing.tank.Netty.Msg;
  * @version: 1.0
  */
 public enum  MsgType{
-    Tank,UUID,Exit,Join;
+    Tank,UUID,Exit,Join,Fire,TankMove,TankDir,TankDie;
     public String getName(){
         String name=null;
         switch (this){
-            case Tank:
-                name="Tank";
-                break;
-            case UUID:
-                name="UUID";
-                break;
-            case Exit:
-                name="Exit";
-                break;
-            case Join:
-                name="Join";
-                break;
+            case Tank:      name="Tank";        break;
+            case UUID:      name="UUID";        break;
+            case Exit:      name="Exit";        break;
+            case Join:      name="Join";        break;
+            case Fire:      name="Fire";        break;
+            case TankMove:  name="TankMove";    break;
+            case TankDir:   name="TankDir";     break;
+            case TankDie:   name="TankDie";     break;
         }
         return name;
     }

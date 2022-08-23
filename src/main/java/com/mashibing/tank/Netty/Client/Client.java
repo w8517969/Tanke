@@ -1,11 +1,10 @@
 package com.mashibing.tank.Netty.Client;
 
+import com.mashibing.tank.GameModel;
 import com.mashibing.tank.Netty.Decode.MsgDecode;
 import com.mashibing.tank.Netty.Encode.MsgEncode;
-import com.mashibing.tank.Netty.Msg.JoinMsg;
-import com.mashibing.tank.Netty.Msg.Msg;
-import com.mashibing.tank.Netty.Msg.TankMsg;
-import com.mashibing.tank.Netty.Msg.UUIDMsg;
+import com.mashibing.tank.Netty.Msg.*;
+import com.mashibing.tank.Tank;
 import com.mashibing.tank.TankFrame;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -121,11 +120,11 @@ public  class Client {
                     //更新自己的UUID号
                     Client.uuid=((UUIDMsg)msg).uuid;
                     //更新主战坦克
-                    Client.frame.getGM().pushMy();
+                    Client.frame.getGM().initialization();
                     //发送新人上线消息
-                    Msg msg1=new JoinMsg();
-                    System.out.println("向服务器发送新人上线消息"+msg1);
-                    ctx.writeAndFlush(msg1);
+                    Msg joinMsg=new JoinMsg();
+                    System.out.println("向服务器发送新人上线消息"+joinMsg);
+                    ctx.writeAndFlush(joinMsg);
                     break;
                 case Exit:
                     //删除对应坦克
@@ -141,9 +140,38 @@ public  class Client {
                     break;
                 case Join:
                     //如果有新人进来上报自己的坦克信息
-                    Msg msg2=new TankMsg(frame.getGM().myTank);
-                    System.out.println("向服务器发送自己的坦克信息"+msg2);
-                    ctx.writeAndFlush(msg2);
+                    Msg tankMsg=new TankMsg(frame.getGM().myTank);
+                    System.out.println("向服务器发送自己的坦克信息"+tankMsg);
+                    ctx.writeAndFlush(tankMsg);
+                    break;
+                case Fire:
+                    //有人开火
+                    Tank fireTank =(GameModel.tankHashMap.get(((FireMsg)msg).uuid));
+                    fireTank.setDir(((FireMsg)msg).dir);
+                    fireTank.setCoordinate(((FireMsg)msg).x, ((FireMsg)msg).y);
+                    fireTank.fire();
+                    break;
+                case TankDir:
+                    //有人改变了方向
+                    Tank dirTank =(GameModel.tankHashMap.get(((TankDirMsg)msg).uuid));
+                    dirTank.setDir(((TankDirMsg)msg).dir);
+                    dirTank.setCoordinate(((TankDirMsg)msg).x, ((TankDirMsg)msg).y);
+                    break;
+                case TankMove:
+                    //有人改变移动状态
+                    Tank movingTank =(GameModel.tankHashMap.get(((TankMoveMsg)msg).uuid));
+                    movingTank.setMoving(((TankMoveMsg)msg).moving);
+                    movingTank.setCoordinate(((TankMoveMsg)msg).x, ((TankMoveMsg)msg).y);
+                    break;
+                case TankDie:
+                    //有人死亡
+                    if (uuid.equals(  ((TankDieMsg)msg).uuid  )){
+                        //如果是自己死亡,刷新自己的坦克并发送新人消息
+                        GameModel.getGameModel().pushMy();
+                        channel.writeAndFlush(new JoinMsg());
+                    }else {
+                        GameModel.getGameModel().remove(((TankDieMsg)msg).uuid);
+                    }
             }
         }
 

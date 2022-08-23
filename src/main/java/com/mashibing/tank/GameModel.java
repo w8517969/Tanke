@@ -1,6 +1,7 @@
 package com.mashibing.tank;
 
 import com.mashibing.tank.Bullet.Bullet;
+import com.mashibing.tank.Decorator.Decorator;
 import com.mashibing.tank.Explode.Explode;
 import com.mashibing.tank.Netty.Client.Client;
 import com.mashibing.tank.Netty.Msg.TankMsg;
@@ -34,16 +35,19 @@ public class GameModel {
     Random random=new Random();
     //构造方法
     private GameModel() {
-        tankCount=bulletCount=explodeCount=0;
-        //刷新墙
-//        gameObjectList.add(new Wall(100, 200, 40, 300));
-//        gameObjectList.add(new Wall(400, 200, 400, 40));
-//        gameObjectList.add(new Wall(600, 400, 40, 300));
         //播放背景音乐
         new Thread(()-> {new Audio("audio/war1.wav").loop();} , "播放背景音乐").start();
     }
     public static GameModel getGameModel(){
         return GAME_MODEL;
+    }
+    public void initialization(){
+        tankCount=bulletCount=explodeCount=0;
+        //刷新墙
+        gameObjectList.add(new Wall(100, 200, 40, 300));
+        gameObjectList.add(new Wall(400, 200, 400, 40));
+        gameObjectList.add(new Wall(600, 400, 40, 300));
+        pushMy();
     }
     //创建主战坦克
     public void pushMy(){
@@ -81,12 +85,18 @@ public class GameModel {
     //在窗口中绘图的方法
     public void paint(Graphics graphics){
         //进行碰撞检测
+        if (random.nextInt(100)>98)myTank.die();
         collision.doTask();
         //计数并画出所有游戏单位
         int t,b,e;
         t=b=e=0;
         for (int i=0;i<gameObjectList.size();i++) {
             GameObject object=gameObjectList.get(i);
+            GameObject temp=object;
+            if (object instanceof Decorator){
+                object=((Decorator) object).getRootObject();
+
+            }
             if (object instanceof Tank){
                 t++;
             }else if (object instanceof Bullet){
@@ -94,7 +104,7 @@ public class GameModel {
             }else if (object instanceof Explode){
                 e++;
             }
-            object.paint(graphics);
+            temp.paint(graphics);
         }
         bulletCount=b;tankCount=t;explodeCount=e;
         Color color = graphics.getColor();
@@ -102,21 +112,28 @@ public class GameModel {
         //显示子弹数
         graphics.drawString("子弹数量:"+bulletCount, 10, 40);
         //显敌人数
-        graphics.drawString("敌人数量:"+(tankCount-1), 10, 60);
+        graphics.drawString("玩家数量:"+tankCount, 10, 60);
         //显示爆炸数
         graphics.drawString("爆炸数量:"+explodeCount, 10, 80);
         graphics.setColor(color);
     }
     //删除游戏元素
     public void remove(GameObject o){
+        if (o==null)return;
         gameObjectList.remove(o);
         if (o instanceof Tank){
-            tankHashMap.remove(((Tank) o).uuid);
+            //显示爆炸效果，播放爆炸声音
+            gameObjectList.add(new Explode(o.coordinate));
+            new Thread(new Audio("audio/explode.wav")::play,"播放爆炸声").start();
+            remove(((Tank) o).uuid);
         }
     }
     public void remove(UUID uuid){
         gameObjectList.remove(tankHashMap.get(uuid));
         tankHashMap.remove(uuid);
+        if (uuid.equals(myTank.uuid)){
+            myTank=null;
+        }
     }
     //添加
     public void add(GameObject o){
@@ -127,12 +144,10 @@ public class GameModel {
     }
     //某个键被摁下去的时候调用
     public void handleKeyPressed(KeyEvent e) {
-        System.out.println(e.getKeyChar()+"键被摁下，GM分发到主战坦克处理");
         myTank.handleKeyPressed(e);
     }
     //某个键被弹起的时候调用
     public void handleKeyReleased(KeyEvent e) {
-        System.out.println(e.getKeyChar()+"键被弹起，GM分发到主战坦克处理");
         myTank.handleKeyReleased(e);
     }
     //坦克列表

@@ -80,15 +80,11 @@ public class TankFrame extends Frame {
         @Override
         //某个键被摁下去的时候调用
         public void keyPressed(KeyEvent e) {
-            System.out.println();
-            System.out.println("游戏窗口检测到"+e.getKeyChar()+"键被摁下");
             GM.handleKeyPressed(e);
         }
         @Override
         //某个键被弹起来的时候调用
         public void keyReleased(KeyEvent e) {
-            System.out.println();
-            System.out.println("游戏窗口检测到"+e.getKeyChar()+"键被弹起");
             GM.handleKeyReleased(e);
         }
     }

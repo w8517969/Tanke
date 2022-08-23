@@ -67,11 +67,15 @@ public class Server {
             Msg msg1=(Msg) msg;
             System.out.println("服务器收到消息："+msg1);
             switch (msg1.msgType){
-                case Tank:
-                    radioAll(msg1);
+                case UUID:
                     break;
+                case Tank:
                 case Join:
-                    //广播新玩家通知
+                case Fire:
+                case TankDir:
+                case TankMove:
+                case TankDie:
+                    System.out.println("广播消息"+msg1);
                     radioAll(msg1);
                     break;
                 case Exit:
@@ -79,13 +83,9 @@ public class Server {
                     removeChannelHandlerContext(ctx);
                     radioAll(msg1);
                     break;
-                case UUID:
                 default:
                     System.out.println("类型不匹配");
-
-
             }
-            System.out.println("广播了消息"+msg1);
         }
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {

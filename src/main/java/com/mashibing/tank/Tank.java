@@ -5,7 +5,10 @@ import com.mashibing.tank.Bullet.Bullet;
 import com.mashibing.tank.Bullet.BulletFactory;
 import com.mashibing.tank.Bullet.DefaultBulletFactory;
 import com.mashibing.tank.Decorator.BoxDecorator;
-import com.mashibing.tank.Explode.Explode;
+import com.mashibing.tank.Netty.Client.Client;
+import com.mashibing.tank.Netty.Msg.FireMsg;
+import com.mashibing.tank.Netty.Msg.TankDirMsg;
+import com.mashibing.tank.Netty.Msg.TankMoveMsg;
 import com.mashibing.tank.coordinate.Coordinate;
 import com.mashibing.tank.resourceMgr.Audio;
 import com.mashibing.tank.resourceMgr.ResourceMgr;
@@ -51,15 +54,12 @@ public class Tank extends GameObject {
     boolean BR=false;
     //键按下的处理
     public void handleKeyPressed(KeyEvent e){
-        System.out.println(e.getKeyChar()+"键被摁下，坦克开始处理");
         if (!isDie()){
             int key=e.getKeyCode();
             switch (key){
                 case KeyEvent.VK_UP:
-                    System.out.println("上");
                     setBU(true);
                     setMoving();
-                    System.out.println((isMoving()?"":"不")+"是移动的");
                     break;
                 case KeyEvent.VK_DOWN:
                     setBD(true);
@@ -78,15 +78,12 @@ public class Tank extends GameObject {
     }
     //键弹起的处理
     public void handleKeyReleased(KeyEvent e){
-        System.out.println(e.getKeyChar()+"键被弹起，坦克开始处理");
         if (!isDie()){
             int key=e.getKeyCode();
             switch (key){
                 case KeyEvent.VK_UP:
-                    System.out.println("上");
                     setBU(false);
                     setMoving();
-                    System.out.println((isMoving()?"":"不")+"是移动的");
                     break;
                 case KeyEvent.VK_DOWN:
                     setBD(false);
@@ -101,11 +98,8 @@ public class Tank extends GameObject {
                     setMoving();
                     break;
                 case KeyEvent.VK_SPACE:
-                    if (random.nextInt(10)>6){
-                        fireFour();
-                    }else {
-                        fire();
-                    }
+                    System.out.println("按下了开火键,向服务器发送开火消息");
+                    Client.channel.writeAndFlush(new FireMsg(this));
                     break;
                 case KeyEvent.VK_NUMPAD0:
                     fireAll();
@@ -114,7 +108,10 @@ public class Tank extends GameObject {
         }
     }
     //开火
-    private void fire() {
+    public void fire(){
+        fireOne();
+    }
+    private void fireOne() {
         Bullet bullet=bulletFactory.getBullet(this);
         GameModel.gameObjectList.add(
                 new BoxDecorator(
@@ -192,22 +189,14 @@ public class Tank extends GameObject {
                 break;
         }
     }
-    //根据按键状态调整坦克方向的方法
-    private void changeDir(){
-        if (BU){dir=Dir.UP;return;}
-        if (BD){dir=Dir.DOWN;return;}
-        if (BL){dir=Dir.LEFT;return;}
-        if (BR){dir=Dir.RIGHT;}
-    }
+
     //更新坦克，其中包括更改坐标，方向，在窗口中显示
     public void paint(Graphics graphics){
         //如果坦克存活
         if (!isDie()) {
             if (moving) {
-                System.out.println("坐标修改前"+this);
                 changeCoordinate();//修改坐标
                 changeDir();//修改方向
-                System.out.println("坐标修改后"+this);
             }
             //画出UUID
             Color color = graphics.getColor();
@@ -295,7 +284,11 @@ public class Tank extends GameObject {
         return moving;
     }
     public void setMoving() {
-        moving=(BU||BD||BL||BR);
+        boolean nowMoving=(BU||BD||BL||BR);
+        if (moving!=nowMoving) {
+            moving=nowMoving;
+            Client.channel.writeAndFlush(new TankMoveMsg(this));
+        }
     }
     //阵营
     public Camp getCamp() {
@@ -305,6 +298,28 @@ public class Tank extends GameObject {
         this.camp = camp;
     }
     //方向
+    //根据按键状态调整坦克方向的方法
+    private void changeDir(){
+        if (BU||BD||BL||BR) {
+            Dir nowDir=Dir.DOWN;
+            if (BU) {
+                nowDir = Dir.UP;
+            }
+            if (BD) {
+                nowDir = Dir.DOWN;
+            }
+            if (BL) {
+                nowDir = Dir.LEFT;
+            }
+            if (BR) {
+                nowDir = Dir.RIGHT;
+            }
+            if (dir!=nowDir){
+                setDir(nowDir);
+                Client.channel.writeAndFlush(new TankDirMsg(this));
+            }
+        }
+    }
     public Dir getDir() {
         return dir;
     }
@@ -360,9 +375,6 @@ public class Tank extends GameObject {
     public void setHeight(int HEIGHT){this.HEIGHT = HEIGHT;}
     //死亡
     public void die() {
-        //显示爆炸效果，播放爆炸声音
-        GameModel.gameObjectList.add(new Explode(coordinate));
-        new Thread(new Audio("audio/explode.wav")::play,"播放爆炸声").start();
         life=0;
     }
     public boolean isDie(){

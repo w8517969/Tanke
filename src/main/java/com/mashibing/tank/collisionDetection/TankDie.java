@@ -2,6 +2,8 @@ package com.mashibing.tank.collisionDetection;
 
 import com.mashibing.tank.GameModel;
 import com.mashibing.tank.GameObject;
+import com.mashibing.tank.Netty.Client.Client;
+import com.mashibing.tank.Netty.Msg.TankDieMsg;
 import com.mashibing.tank.Tank;
 
 /**
@@ -15,8 +17,10 @@ public class TankDie implements Task {
     public boolean doTask() {
         for (int i = 0; i < GameModel.gameObjectList.size(); i++) {
             GameObject object=GameModel.gameObjectList.get(i);
-            if (object instanceof Tank&&((Tank) object).isDie()){
-                GameModel.gameObjectList.remove(object);
+            if ( (object instanceof Tank) && (object.isDie() ) ){
+                System.out.println(object);
+                GameModel.getGameModel().remove(object);
+                Client.channel.writeAndFlush(new TankDieMsg(((Tank) object).uuid));
             }
         }
         return true;
