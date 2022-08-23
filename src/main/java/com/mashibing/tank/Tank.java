@@ -1,7 +1,9 @@
 package com.mashibing.tank;
 
 
-import com.mashibing.tank.Bullet.*;
+import com.mashibing.tank.Bullet.Bullet;
+import com.mashibing.tank.Bullet.BulletFactory;
+import com.mashibing.tank.Bullet.DefaultBulletFactory;
 import com.mashibing.tank.Decorator.BoxDecorator;
 import com.mashibing.tank.Explode.Explode;
 import com.mashibing.tank.coordinate.Coordinate;
@@ -11,6 +13,7 @@ import com.mashibing.tank.resourceMgr.ResourceMgr;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * @Auther: szbb-544826634
@@ -19,6 +22,7 @@ import java.util.Random;
  * @version: 1.0
  */
 public class Tank extends GameObject {
+    public UUID uuid;
     //阵营
     public Camp camp;
     //子弹工厂
@@ -47,13 +51,15 @@ public class Tank extends GameObject {
     boolean BR=false;
     //键按下的处理
     public void handleKeyPressed(KeyEvent e){
-        //如果是友军
-        if (camp==Camp.MY){
+        System.out.println(e.getKeyChar()+"键被摁下，坦克开始处理");
+        if (!isDie()){
             int key=e.getKeyCode();
             switch (key){
                 case KeyEvent.VK_UP:
+                    System.out.println("上");
                     setBU(true);
                     setMoving();
+                    System.out.println((isMoving()?"":"不")+"是移动的");
                     break;
                 case KeyEvent.VK_DOWN:
                     setBD(true);
@@ -72,13 +78,15 @@ public class Tank extends GameObject {
     }
     //键弹起的处理
     public void handleKeyReleased(KeyEvent e){
-        //如果是友军
-        if (camp==Camp.MY&&life>=1){
+        System.out.println(e.getKeyChar()+"键被弹起，坦克开始处理");
+        if (!isDie()){
             int key=e.getKeyCode();
             switch (key){
                 case KeyEvent.VK_UP:
+                    System.out.println("上");
                     setBU(false);
                     setMoving();
+                    System.out.println((isMoving()?"":"不")+"是移动的");
                     break;
                 case KeyEvent.VK_DOWN:
                     setBD(false);
@@ -196,16 +204,16 @@ public class Tank extends GameObject {
         //如果坦克存活
         if (!isDie()) {
             if (moving) {
+                System.out.println("坐标修改前"+this);
                 changeCoordinate();//修改坐标
                 changeDir();//修改方向
+                System.out.println("坐标修改后"+this);
             }
-            //如果是敌方坦克，就生成炮弹
-            if (camp!=Camp.MY&&random.nextInt(100)>95){
-                //增加随机开炮
-                fire();
-                //随机移动
-                randomMoving();
-            }
+            //画出UUID
+            Color color = graphics.getColor();
+            graphics.setColor(Color.orange);
+            graphics.drawString(uuid.toString(), this.coordinate.x, this.coordinate.y-10);
+            graphics.setColor(color);
             //画出坦克
             switch (dir) {
                 case UP:
@@ -244,20 +252,23 @@ public class Tank extends GameObject {
         setDir(randomDir());
         setMoving(true);
     }
-
     //构造
-
-
-    public Tank(Coordinate coordinate, Camp camp) {
+    public Tank(Coordinate coordinate, UUID uuid, Camp camp, int life, boolean moving, Dir dir) {
         super(coordinate);
+        this.uuid = uuid;
         this.camp = camp;
+        this.life = life;
+        this.moving = moving;
+        this.dir = dir;
     }
-
-    public Tank(int x, int y, Camp camp) {
+    public Tank(int x, int y, UUID uuid, Camp camp, int life, boolean moving, Dir dir) {
         super(x, y);
+        this.uuid = uuid;
         this.camp = camp;
+        this.life = life;
+        this.moving = moving;
+        this.dir = dir;
     }
-
     @Override
     public String toString() {
         return "Tank{" +
@@ -284,7 +295,7 @@ public class Tank extends GameObject {
         return moving;
     }
     public void setMoving() {
-        if (BU||BD||BL||BR){moving=true;}else {moving=false;}
+        moving=(BU||BD||BL||BR);
     }
     //阵营
     public Camp getCamp() {
@@ -351,13 +362,12 @@ public class Tank extends GameObject {
     public void die() {
         //显示爆炸效果，播放爆炸声音
         GameModel.gameObjectList.add(new Explode(coordinate));
-        new Thread(new Audio("audio/explode.wav")::play).start();
+        new Thread(new Audio("audio/explode.wav")::play,"播放爆炸声").start();
         life=0;
     }
     public boolean isDie(){
         return life<=0;
     }
-
     //返回一个矩形
     public Rectangle getRectangle() {
         this.rectangle.x=this.coordinate.x;

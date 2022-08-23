@@ -1,5 +1,7 @@
 package com.mashibing.tank;
 
+import com.mashibing.tank.Netty.Client.Client;
+import com.mashibing.tank.Netty.Msg.ExitMsg;
 import com.mashibing.tank.resourceMgr.PropertyMgr;
 
 import java.awt.*;
@@ -15,9 +17,16 @@ import java.awt.event.WindowEvent;
  * @version: 1.0
  */
 public class TankFrame extends Frame {
+    private static final TankFrame TANK_FRAME=new TankFrame();
     public static final int GAME_WIDTH=Integer.parseInt(PropertyMgr.get("GAME_WIDTH")),
             GAME_HEIGHT=Integer.parseInt(PropertyMgr.get("GAME_HEIGHT"));
-    public GameModel GM=new GameModel();
+    public static GameModel GM=GameModel.getGameModel();
+    static {
+        TANK_FRAME.setSize(GAME_WIDTH, GAME_HEIGHT);//设置窗口大小
+        TANK_FRAME.setResizable(false);//设置窗口不可以改变大小
+        TANK_FRAME.setTitle("坦克大战");//设置窗口标题
+        TANK_FRAME.setVisible(true);//设置窗口为显示状态
+    }
     //避免显示闪烁，使用缓存空间避免闪烁
     Image offScreenImage=null;//图片
     @Override
@@ -42,19 +51,24 @@ public class TankFrame extends Frame {
         g.drawImage(offScreenImage, 0, 0, null);
     }
     //构造方法
-    public TankFrame() throws HeadlessException {
-        setSize(GAME_WIDTH, GAME_HEIGHT);//设置窗口大小
-        setResizable(false);//设置窗口不可以改变大小
-        setTitle("坦克大战");//设置窗口标题
-        setVisible(true);//设置窗口为显示状态
+    private TankFrame()  {
         addKeyListener(new MyKeyListener());//给窗口增加一个键盘监听事件0
         //添加Window监听器，点击右上角的小叉可以关闭窗口
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                Client.channel.writeAndFlush(new ExitMsg());
+                try {
+                    Client.channel.close().sync();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
                 System.exit(0);
             }
         });
+    }
+    public static TankFrame getTankFrame(){
+        return TANK_FRAME;
     }
     @Override
     //在窗口中绘图的方法
@@ -66,30 +80,16 @@ public class TankFrame extends Frame {
         @Override
         //某个键被摁下去的时候调用
         public void keyPressed(KeyEvent e) {
+            System.out.println();
+            System.out.println("游戏窗口检测到"+e.getKeyChar()+"键被摁下");
             GM.handleKeyPressed(e);
         }
         @Override
         //某个键被弹起来的时候调用
         public void keyReleased(KeyEvent e) {
+            System.out.println();
+            System.out.println("游戏窗口检测到"+e.getKeyChar()+"键被弹起");
             GM.handleKeyReleased(e);
-//            if (e.getKeyCode()==KeyEvent.VK_NUMPAD5){
-//                GM.push();
-//            }else if (e.getKeyCode()==KeyEvent.VK_NUMPAD8){
-//                    for (int i = 0; i < GM.gameObjectList.size(); i++) {
-//                        GameObject o=GM.gameObjectList.get(i);
-//                        String str=o.getClass().getName();
-//                        System.out.println(str);
-//                        if (o instanceof Tank){
-//                            System.out.println("坦克是否死亡"+((Tank) o).isDie());
-//                        }else if (o instanceof Bullet){
-//                            System.out.println("子弹是否存活"+((Bullet) o).isExist());
-//                            System.out.println(((Bullet)o).camp);
-//                            System.out.println(((Bullet)o).coordinate);
-//                        }else if (o instanceof Explode){
-//                            System.out.println("爆炸是否存活"+((Explode) o).isExist());
-//                        }
-//                    }
-//            }
         }
     }
 

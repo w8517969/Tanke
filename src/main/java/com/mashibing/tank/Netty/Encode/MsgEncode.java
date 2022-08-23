@@ -1,6 +1,6 @@
 package com.mashibing.tank.Netty.Encode;
 
-import com.mashibing.tank.Netty.TankMsg;
+import com.mashibing.tank.Netty.Msg.Msg;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -11,10 +11,9 @@ import io.netty.handler.codec.MessageToByteEncoder;
  * @Description: Encode
  * @version: 1.0
  */
-public class TankMsgEncode extends MessageToByteEncoder<TankMsg> {
+public class MsgEncode extends MessageToByteEncoder<Msg> {
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, TankMsg tankMsg, ByteBuf byteBuf) throws Exception {
-//        byteBuf.writeInt(tankMsg.x);
-//        byteBuf.writeInt(tankMsg.y);
+    protected void encode(ChannelHandlerContext channelHandlerContext, Msg msg, ByteBuf byteBuf) throws Exception {
+        byteBuf.writeBytes(msg.toBytes());
     }
 }
